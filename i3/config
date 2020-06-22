@@ -100,7 +100,11 @@ bindsym $mod+m focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+c focus child
+
+# scratchpad
+bindsym $mod+n scratchpad show 
+bindsym $mod+o move scratchpad
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -148,7 +152,7 @@ set $mod Mod4
 
 # >>> Remove title bar and set border <<
 smart_borders on
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 0
 
 # >>> Colors <<<
 
@@ -210,8 +214,6 @@ bindsym $mod+r mode "resize"
 
 exec_always --no-startup-id kickoff-panel --disable-wm-check
 
-
-
 # >>> Plasma Integration <<<
 
 # Try to kill the wallpaper set by Plasma (it takes up the entire workspace
@@ -219,31 +221,46 @@ exec_always --no-startup-id kickoff-panel --disable-wm-check
 exec --no-startup-id wmctrl -c Plasma
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
 
+floating_minimum_size 3x3
 # Avoid tiling popups, dropdown windows from plasma
+for_window [class="Plasma-desktop"] border none
+for_window [class="Plasma-desktop"] floating enable
+for_window [title="plasma-desktop"] floating enable; border none
+for_window [title="win7"] floating enable; border none
 for_window [class="plasmashell"] floating enable
 for_window [class="Plasma"] floating enable
-for_window [class="krunner"] floating enable
+for_window [class="krunner"] floating enable; border none
 for_window [class="Kmix"] floating enable
-for_window [class="Klipper"] floating enable
+for_window [class="Klipper"] floating enable; border none
 for_window [class="Plasmoidviewer"] floating enable
+for_window [class="(?i)*nextcloud*"] floating disable
+for_window [class="plasmashell" window_type="notification"] floating enable, move position 1020 25, border none,no_focus
+
+# Don’t let notifications and non-interactive pop-up windows steal focus
+no_focus [class="plasmashell" window_type="notification"]
+no_focus [class="plasmashell" window_type="on_screen_display"]
+no_focus [class="plasmawindowed" window_type="notification"]
+no_focus [class="plasmawindowed" title="System Tray"]
+
+bindsym $mod+b exec plasma-desktop;
+bindsym $mod+y exec "killall plasma-desktop";
 
 # >>> Window Rules <<<
   # >>> Avoid tiling Plasma popups, dropdown windows, etc. <<<
   # For the first time, manually resize them, i3 will remember the setting for floating windows
   
-    for_window [class="yakuake"] floating enable border none;
+    for_window [class="yakuake"] floating enable border none sticky enable;
     for_window [class="ksmoothdock"] floating enable border none;
     for_window [class="lattedock"] floating enable;
     for_window [class="plasmashell"] floating enable;
-    for_window [class="Kmix"] floating enable; border none
-    for_window [class="kruler"] floating enable; border none
-    for_window [class="Plasma"] floating enable; border none
-    for_window [class="Klipper"] floating enable; border none
-    for_window [class="krunner"] floating enable; border none
-    for_window [class="Plasmoidviewer"] floating enable; border none
-
-
-    for_window [title="plasma-desktop"] floating enable; border none
+    for_window [class="Kmix"] floating enable; border none;
+    for_window [class="kruler"] floating enable; border none;
+    for_window [class="Plasma"] floating enable; border none;
+    for_window [class="Klipper"] floating enable; border none;
+    for_window [class="krunner"] floating enable; border none;
+    for_window [class="Plasmoidviewer"] floating enable; border none;
+    for_window [title="plasma-desktop"] floating enable; border none;
+    for_window [class = "plasmawindowed" window_type = "notification"] floating enable, move position 1020 30, border none, no_focus
 
 
 
@@ -255,29 +272,43 @@ for_window [window_role="Preferences"] floating enable
 for_window [window_role="About"] floating enable 
 for_window [window_type="dialog"] floating enable
 for_window [window_type="menu"] floating enable
+for_window [window_type="notification"] floating enable, no_focus
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play-pause
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+#bindsym XF86AudioPlay exec playerctl play-pause
+#bindsym XF86AudioPause exec playerctl pause
+#bindsym XF86AudioNext exec playerctl next
+#bindsym XF86AudioPrev exec playerctl previous
 
 # Wallpaper
 #exec_always feh --bg-scale /home/roderyx/Pictures/lucina_by_oldhat104_d5w7m0h.png
-exec_always feh --bg-scale /home/roderyx/Pictures/touka.png
+#exec_always feh --bg-scale /home/roderyx/Pictures/touka.png
 #exec_always feh --bg-scale /home/roderyx/Pictures/peacock.png
 #exec_always feh --bg-scale /home/roderyx/Pictures/tiburoncin.jpg
-
+#exec_always feh --bg-scale /home/roderyx/Pictures/Josefu.png
+exec_always feh --bg-scale /home/roderyx/Pictures/majoras.jpg
 # Gaps
 gaps inner 4 
 gaps outer 2
 
 # Programs
 exec spotify
-exec compton
+exec picom -b  
+#--experimental-backends --backend glx
 exec /home/roderyx/.config/polybar/launch.sh
+exec --no-startup-id redshift -l 14.612411:-90.588316
+
+
+#extras
+floating_minimum_size 3 x 3
+#for_window [title="Application Menu"] floating enable, sticky enable, border none, resize set 20 20, move position 0 0
+#exec_always --no-startup-id plasmawindowed org.kde.plasma.kicker
+for_window [title= "System Tray"] floating enable, sticky enable, border none, move scratchpad, move position 1200 500, no_focus, resize set 10 10
+exec_always --no-startup-id plasmawindowed org.kde.plasma.systemtray
+for_window [title= "System Tray Settings"] floating enable, sticky enable, border none, 
+for_window [title = "Quick Format Citation"] floating enable
